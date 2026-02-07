@@ -1,0 +1,13 @@
+setup.py
+dashmin/__init__.py
+dashmin/apps.py
+dashmin/context_processors.py
+dashmin/forms.py
+dashmin/sites.py
+dashmin/tests.py
+dashmin/urls.py
+dashmin/views.py
+django_dashmin.egg-info/PKG-INFO
+django_dashmin.egg-info/SOURCES.txt
+django_dashmin.egg-info/dependency_links.txt
+django_dashmin.egg-info/top_level.txt

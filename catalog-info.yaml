@@ -1,0 +1,71 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: django-dashmin
+  title: Django Dashmin Admin Dashboard
+  description: A Django admin dashboard package providing customizable administration interface with enhanced model management capabilities
+  annotations:
+    backstage.io/source-location: url:https://github.com/your-org/django-dashmin
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - django
+    - admin
+    - dashboard
+    - python
+    - web-framework
+  links:
+    - url: https://github.com/your-org/django-dashmin
+      title: Source Code
+      icon: github
+    - url: https://github.com/your-org/django-dashmin/blob/main/README.md
+      title: Documentation
+      icon: docs
+spec:
+  type: library
+  lifecycle: experimental
+  owner: backend-team
+  system: admin-tools
+  dependsOn:
+    - component:django
+  providesApis:
+    - django-dashmin-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: django-dashmin-api
+  title: Django DashMin API
+  description: API interface for Django DashMin admin dashboard functionality
+  tags:
+    - django
+    - admin
+    - internal
+spec:
+  type: library
+  lifecycle: experimental
+  owner: backend-team
+  system: admin-tools
+  definition: |
+    ## Django DashMin Library API
+    
+    ### ModelDashmin Class
+    - **Purpose**: Base class for creating custom admin interfaces for Django models
+    - **Key Features**:
+      - Customizable list display configuration
+      - Built-in filtering capabilities  
+      - Search field support
+      - Template customization
+    
+    ### Available Views
+    - **DashminModelCreateView**: Handle model creation
+    - **DashminModelListView**: Display model listings with pagination and filtering
+    - **DashminModelUpdateView**: Handle model updates
+    
+    ### Registration System
+    - **register()**: Function to register models with the dashmin admin interface
+    - **autodiscover_modules()**: Automatically discover dashboard modules in Django apps
+    
+    ### Template Structure
+    - Base admin templates with customizable blocks
+    - Model-specific templates for CRUD operations
+    - User authentication templates
