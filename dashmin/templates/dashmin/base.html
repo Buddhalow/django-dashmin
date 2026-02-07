@@ -1,25 +1,4 @@
 {% load i18n %}
-{% load partials %}
-{% load tailwind_filters %}
-{% partialdef wizard %}
-<form class="fixed top-0 left-0 bg-white flex flex-row w-full bg-body" method="POST" onsubmit="handleSubmit(event)">
-  {% csrf_token %}
-  <div class="flex flex-row items-center border-b-1 border-b-neutral-200">
-    <a><i class="ph ph-x"></i></a>
-    <div style="flex: 1"></div>
-    <h3>{% block wizard_title %}{% endblock %}</h3>
-    <div style="flex: 1"></div>
-  </div>
-  <div class="m-3 grid grid-cols-2 text-lg">
-    <div class="grid">
-    {{ form|crispy }}
-    </div>
-  </div>
-  <div class="bottom-0 left-0 flex flex-row w-full p-3 bg-body border-t-1 border-t-neutral-200">
-    {% block wizard_footer %}{% endblock %}  
-  </div>
-</form>
-{% endpartialdef wizard %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -193,6 +172,8 @@
     />
     {% block head %}
     {% endblock %}
+    <script src="//unpkg.com/alpinejs"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>  
     <script>
@@ -226,12 +207,12 @@
             </div>
           `);
         })
-        $('body').on('click', 'button', (event) => {
+        $('body').on('click', 'button.loadable', (event) => {
           if ($(event.target).hasClass('clicked')) {
             return true;
           }
           $(event.target).addClass('clicked')
-          $(event.target).prepend(`
+          $(event.target).html(`
             <div class="pulse-dots">
               <div style="--number: 0" class="dot"></div>
               <div style="--number: 1" class="dot"></div>
@@ -534,9 +515,7 @@
           </label>
           <div style="flex: 1"></div>
           <div class="navbar-center gap-1">
-            <a href="{% url 'creator_overview' creator.slug %}">Overview</a>
-            <a href="{% url 'creator_projects' creator.slug %}">Projects</a>
-            <a href="{% url 'creator_streams' creator.slug %}">Streams</a>
+            {% block top_menu %}{% endblock %}
           </div>
           <div style="flex: 1"></div>
           <i class="ph ph-info" style="font-size: 28pt"></i>
@@ -599,6 +578,26 @@
             </div>
             <div class="flex flex-1 flex-col" style="overflow-y: scroll">
               {% block page %}{% endblock %}
+              <footer class="bg-dark text-light" style="padding: 20pt">
+                <div class="container">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <p>Copyright &copy; 2026 Alexander Forselius. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6">
+                      <ul>
+                        <li>
+                          <a href="/sv/terms-of-use">{% trans 'Terms of Use' %}</a>
+                        </li>
+                        <li>
+                          <a href="/sv/privacy-policy">{% trans 'Privacy Policy' %}</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div style="height: 200pt"></div>
+              </footer>
             </div>
           </div>
         </div>

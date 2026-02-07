@@ -1,0 +1,21 @@
+{% extends "dashmin/base.html" %}
+{% load i18n %}
+{% block page %}
+<script>
+</script>
+<form method="POST" class="wizard bg-white" onsubmit="handleSubmit(event)">
+  {% csrf_token %}
+  <div class="wizard-header bg-body">
+    <a><i class="ph ph-x"></i></a>
+    <div style="flex: 1"></div>
+    <h3>{% block wizard_title %}{% endblock %}</h3>
+    <div style="flex: 1"></div>
+  </div>
+  <div class="wizard-content m-3  grid-cols-2 text-lg">
+    {% block wizard_content %}{% endblock %}
+  </div>s
+  <div class="wizard-footer border-t-neutral-200">
+    {% block wizard_footer %}{% endblock %}
+  </div>
+</form>
+{% endblock %}
