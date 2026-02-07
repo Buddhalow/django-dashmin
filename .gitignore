@@ -1,0 +1,8 @@
+.venv/
+.env
+.env.production
+.env.development
+.env*.local
+frontend/dist/
+__pycache__/
+*.pyc

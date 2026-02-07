@@ -1,0 +1,26 @@
+{% extends "hourly/dashboard/creator/base.html" %}
+{% load i18n %}
+{% load tailwind_filters %}
+{% block page %}
+<script>
+</script>
+<form method="POST" onsubmit="handleSubmit(event)">
+  {% csrf_token %}
+  <div class="wizard">
+     <a><i class="ph ph-x"></i></a>
+   
+    <div style="flex: 1"></div>
+    <h3>{% trans model.name %}</h3>
+    <div style="flex: 1"></div>
+  </div>
+  <div class="wizard-content">
+    <div class="grid">
+    {{ form|crispy }}
+    </div>
+  </div>
+  <div class="wizard-footer">
+    <div style="flex: 1"></div>
+    <button class="btn btn-primary" type="submit">{% trans model.name %}</button>
+  </div>
+</form>
+{% endblock %}

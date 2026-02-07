@@ -1,0 +1,610 @@
+{% load i18n %}
+{% load partials %}
+{% load tailwind_filters %}
+{% partialdef wizard %}
+<form class="fixed top-0 left-0 bg-white flex flex-row w-full bg-body" method="POST" onsubmit="handleSubmit(event)">
+  {% csrf_token %}
+  <div class="flex flex-row items-center border-b-1 border-b-neutral-200">
+    <a><i class="ph ph-x"></i></a>
+    <div style="flex: 1"></div>
+    <h3>{% block wizard_title %}{% endblock %}</h3>
+    <div style="flex: 1"></div>
+  </div>
+  <div class="m-3 grid grid-cols-2 text-lg">
+    <div class="grid">
+    {{ form|crispy }}
+    </div>
+  </div>
+  <div class="bottom-0 left-0 flex flex-row w-full p-3 bg-body border-t-1 border-t-neutral-200">
+    {% block wizard_footer %}{% endblock %}  
+  </div>
+</form>
+{% endpartialdef wizard %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <script
+      src="https://code.jquery.com/jquery-4.0.0.js"
+      integrity="sha256-9fsHeVnKBvqh3FB2HYu7g2xseAZ5MlN6Kz/qnkASV8U="
+      crossorigin="anonymous"></script>
+    <title>Workers panel</title>
+    <style type="text/tailwindcss"> 
+      @theme {
+        /*--color-primary: rgb(29, 225, 154);
+        --color-primary-content: black;*/
+      }
+      * {
+        /*transition: all 0.5s;*/
+      }
+      @layer components {
+        
+        .wizard {
+          position: fixed;
+          width: 100%;
+          height: 100%;
+          left: 0;
+          top: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .wizard-header {
+          padding: 10pt;
+          display: flex;
+          flex-direction: row;
+          border-bottom: 1pt solid rgba(127, 127, 127, .5);
+        }
+        .wizard-content {
+          overflow-y: scroll;
+          flex: 1;
+        }
+        .wizard-bottom, .wizard-footer {
+          padding: 10pt;
+          display: flex;
+          flex-direction: row;
+          border-top: 1pt solid rgba(127, 127, 127, .1);
+        }
+        .circle {
+          border-radius: 100%;
+          width: 32pt;
+          aspect-ratio: 1/1;
+          display: flex;
+          align-items: center;
+          justify-content: center;          
+        }
+        .btn {
+          border-radius: calc(infinity * 1px);
+          --btn-shadow: none;
+          @variant hover {
+            transform: scale(1.05) !important;
+          }
+          @variant active {
+            transform: scale(1) !important;
+          }
+        }
+        .skeudomorph {
+          
+          --color-primary-content: white;
+          .table th, .well, .wizard-header, .wizard-footer { 
+            background: linear-gradient(180deg, #fff, #ddd);
+            text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+            box-shadow: 0 1px 0 #fafafa;
+          }
+          .table th {
+            border-right: 1px solid rgba(200, 200, 200, 1);
+            border-bottom: 1px solid rgba(200, 200, 200, 1);
+            border-top: 1px solid rgba(200, 200, 200, 1);
+            
+          }
+          .table th:first-child {
+            border-left: 1px solid rgba(200, 200, 200, 1);
+          }
+          .btn-soft {
+            border: 1px solid color-mix(in srgb, var(--btn-bg), black 50%);
+            background: linear-gradient(180deg,  color-mix(in srgb, var(--btn-bg), white 50%), color-mix(in srgb, var(--btn-bg), black 20%));
+            text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+            box-shadow: inset 0 1px 0 color-mix(in srgb, var(--btn-bg), white 80%);
+            color: var(--btn-fg);
+            @variant active {
+              box-shadow: inset 0 1px 0 color-mix(in srgb, var(--btn-bg), black 80%);
+              background: linear-gradient(180deg, color-mix(in srgb, var(--btn-bg), black 80%), color-mix(in srgb, var(--btn-bg), black 70%));
+            }
+          }
+          .btn-primary {
+            border: none !important;
+          }
+          .select, .input {
+            box-shadow:inset 1pt 1pt 5px rgba(0, 0, 0, .5);
+            border: 1px solid #333;
+            border-right: 1px solid #aaa;
+            border-radius: 0;
+            border-bottom: 1px solid #aaa;
+            &:focus {
+              outline: none;
+              box-shadow:inset 1pt 1pt 5px rgba(0, 0, 0, .5), 0 0 8pt var(--color-spacify);
+            }
+          }
+        }
+
+      .shiny {
+        background-image: repeating-linear-gradient(
+          101deg,
+          rgba(255, 255, 255, 0.5),
+          rgba(0, 0, 0, 0.5),
+          rgba(255, 255, 255, 0.5)
+        ) !important;
+        animation: 5s infinite alternate bg-scroll-x;
+      }
+      
+      a.clicked {
+        /*
+        background-image: repeating-linear-gradient(
+          101deg,
+          rgba(255, 255, 255,1),
+          rgba(200, 200, 200, 1),
+          rgba(255, 255, 255, 1)
+        ) !important;
+        border: 1pt solid #888;
+        color: black !important;
+        animation: 5s infinite alternate bg-scroll-x;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        */
+      }
+      .btn.clicked {
+
+        background-image: repeating-linear-gradient(
+          101deg,
+          rgba(255, 255, 255, 0.5),
+          rgba(200, 200, 200, 0.5),
+          rgba(255, 255, 255, 0.5)
+        );
+        background-clip: initial;
+        animation: 5s infinite alternate bg-scroll-x;
+        
+      }
+      @keyframes bg-scroll-x {
+        from {
+          background-position: 0 0;
+        }
+        to {
+          background-position: -100pt 0;
+        }
+      }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"
+    />
+    {% block head %}
+    {% endblock %}
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>  
+    <script>
+      function calculateLive() {
+        var rand = Math.random() * 100000;
+        var reach = 29000000000 - rand;
+        return reach
+      }
+      function renderLive() {
+        const reach = calculateLive()
+        var reachDivs = document.querySelectorAll('.reach');
+        for (let reachDiv of reachDivs) {
+          reachDiv.innerHTML = `${reach?.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+        }
+      }
+      window.addEventListener('load', () => {
+        setInterval(() => {
+          renderLive()
+        }, 5000)
+        renderLive();
+        $('body').on('click', 'a', (event) => {
+          if ($(event.target).hasClass('clicked')) {
+            return true;
+          }
+          $(event.target).addClass('clicked')
+          $(event.target).html(`
+            <div class="pulse-dots">
+              <div style="--number: 0" class="dot"></div>
+              <div style="--number: 1" class="dot"></div>
+              <div style="--number: 2" class="dot"></div>
+            </div>
+          `);
+        })
+        $('body').on('click', 'button', (event) => {
+          if ($(event.target).hasClass('clicked')) {
+            return true;
+          }
+          $(event.target).addClass('clicked')
+          $(event.target).prepend(`
+            <div class="pulse-dots">
+              <div style="--number: 0" class="dot"></div>
+              <div style="--number: 1" class="dot"></div>
+              <div style="--number: 2" class="dot"></div>
+            </div>
+          `)
+        })
+      })
+    </script>
+    <style>
+      /*@view-transition {
+        navigation: auto;
+      }*/
+      .tab-bar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-items: flex-start;
+        padding: 20pt;
+        gap: 3pt;
+        width: 100%;
+      }
+      .tab-bar-tab {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        flex: 1;
+        gap: 13pt;
+      }
+      .tab-bar-tab-underline {
+        visibility: hidden;
+        width: 30pt;
+        height: 2pt;
+        background: currentColor;
+      }
+      .tab-bar-tab-active .tab-bar-tab-underline {
+        visibility: visible;
+      }
+      :root {
+        --daisy-btn-shadow: none;
+      }
+      tr:hover td {
+        background: rgba(127, 127, 127, .1);
+        cursor: pointer;
+      }
+      body {
+        font-family: Lato, serif;
+        font-weight: 100 900;
+        font-family:rgba(130, 99, 99, 0.1);
+        font-optical-sizing: auto;
+        font-weight: 520;
+        letter-spacing: -0.005em;
+
+        color: rgba(0,0,0,0.92);
+
+        text-shadow:
+          0.3px 0 rgba(0,0,0,0.35),
+        -0.3px 0 rgba(0,0,0,0.2);
+      }
+      .pulse-dots {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 5pt; 
+        animation: pulser-scale 2.5s infinite ease-in-out;
+        
+        --dots: 3;
+
+      }
+      .pulse-dots .dot {
+        counter-increment: pulse;
+        width: 10pt; 
+        height: 10pt;
+        border-radius: 100%;
+        background: currentColor;
+        animation: pulse-opacity 0.5s infinite ease-in-out, pulse-scale 2s infinite ease-in-out;
+        transform: scale(0.5);
+        opacity: 0.5;
+        animation-delay: calc(var(--number) * 0.25s);
+      }
+
+      @keyframes pulser-scale {
+        0% {
+          transform: scale(1);
+        }
+        25% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.5);
+        }
+        75% {
+          transform: scale(1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      @keyframes pulse-scale {
+        0% {
+          transform: scale(0.5); 
+        } 
+        20% {
+          transform: scale(1);
+        }
+        30% {
+          transform: scale(0.5); 
+        }
+        100% {
+          transform: scale(0.5); 
+        }
+      }
+
+
+      @keyframes pulse-opacity {
+        0% { 
+          opacity: 0.5;
+        } 
+        20% { 
+          opacity: 1;
+        }
+        30% { 
+          opacity: 1;
+        }
+        100% { 
+          opacity: 0.5;
+        }
+      }
+
+      @keyframes pulse-x {
+        0% {
+          transform: scale(calc(0.5 + (var(--pulse-scale) * (counter(pulse) 0))));
+          opacity: 1;
+        }
+        25% {
+          transform: scale(calc(0.5 + (var(--pulse-scale) * (counter(pulse) + 1))));
+          opacity: 1;
+        }
+        50% {
+          transform: scale(calc(0.5 + (var(--pulse-scale) * (counter(pulse) + 2))));
+          opacity: calc(1 * (counter(pulse) / 2));
+        }
+        75% {
+          transform: scale(calc(0.5 + (var(--pulse-scale) * (counter(pulse) + 2))));
+          opacity: calc(1 * (counter(pulse) + 2));
+        }
+        100% {
+          transform: scale(calc(0.5 + (var(--pulse-scale) * (counter(pulse) + 3))));
+          opacity: 1;
+        }
+      }
+
+      @keyframes pulse-y {
+        0% {
+          transform: scale(calc(1 + (var(--pulse-scale) * (counter(pulse) + 1))));
+          opacity: 1;
+        }
+        33% {
+          transform: scale(calc(1 + (var(--pulse-scale) * (counter(pulse) + 2))));
+          opacity: 1;
+        }
+        33% {
+          transform: scale(calc(1 + (var(--pulse-scale) * (counter(pulse) + 3))));
+          opacity: 1;
+        }
+      }
+
+      .btn:hover {
+        transform: scale(1.01) !important;
+      }
+      .btn:active {
+        transform: scale(0.99) !important;
+        opacity: 0.5 !important;
+      }
+      .btn:focus {
+        outline: 2pt solid black !important;
+        outline-offset: 2pt;
+      }
+      .bottom {
+        position: fixed;
+        width: 100%;
+        height: auto;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .bottom-tab-bar {
+      }
+      .bottom-tab-bar ul {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, .2));
+        box-shadow: 0 5pt 13pt -12pt rgba(0, 0, 0, .5);
+        border-radius: 5pt;
+        justify-content: center;
+      }
+      .bottom-tab-bar li {
+        list-style-type: none;
+      }
+      .bottom-tab-bar ul li {
+        padding: 20pt;
+      }
+      button {
+        cursor: pointer;
+      }
+      button:hover, a:hover {
+        transform: scale(1.05) !important;
+      }
+      button:active, a:active {
+        transform: scale(1) !important;
+      }
+      .container {
+        margin-left: 15%;
+        margin-right: 15%;
+      }
+      @media screen and (max-width: 720pt) {
+        .container {
+          margin-left: 0;
+          margin-right: 0;
+        }
+      }
+      :root {
+        --size: 16px;
+        --speed: 0.6s;
+        --bar-width: calc(var(--size) / 5);
+        --gutter-width: calc(calc(var(--size) - var(--bar-width) * 3) / 2);
+        --bar-color: currentColor;
+      }
+
+      .icon-bars {
+        margin: 10px;
+        position: relative;
+        width: var(--size);
+        height: var(--size);
+          
+      }
+
+      .bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        top: 0;
+        width: var(--bar-width);
+        background-color: var(--bar-color);
+        animation: up-down var(--speed) infinite;
+        &:nth-child(2)   {
+          left: calc(var(--bar-width) + var(--gutter-width));
+          animation-delay: calc(var(--speed) / 3 * 2);
+        }
+        &:nth-child(3) {
+          left: calc(var(--bar-width) * 2 + var(--gutter-width) * 2);
+          animation-delay: calc(var(--speed) / 3);
+        }
+      }
+      @keyframes up-down {
+        from {
+          top: var(--size);
+        }
+        50% {
+          top: 0;
+        }
+        to {
+          top: var(--size);
+        }
+      }
+    </style>
+    <script>
+      function handleSubmit(event) {
+        var form = event.target
+        var submitButtons = form.querySelectorAll('button[type="submit"]')
+        for (let submitButton of submitButtons) {
+          submitButton.disabled = true
+          submitButton.style.opacity = 0.5
+          submitButton.innerHTML = `
+            <div class="pulse-dots">
+              <div style="--number: 0" class="dot"></div>
+              <div style="--number: 1" class="dot"></div>
+              <div style="--number: 2" class="dot"></div>
+            </div>
+          `;
+
+        }
+      }
+
+
+    </script>
+  </head>
+  <body class="">
+    <div class="drawer md:drawer-open lg:drawer-open">
+      <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content" >
+        <!-- Navbar -->
+        <nav style="display: none" class="navbar flex flex-row bg-black text-white w-full gap-1 p-3">
+          <label for="my-drawer-4" aria-label="open sidebar" class="btn btn-square btn-ghost text-white">
+            <i class="ph ph-house" style="font-size: 28pt"></i>
+          </label>
+          <div style="flex: 1"></div>
+          <div class="navbar-center gap-1">
+            <a href="{% url 'creator_overview' creator.slug %}">Overview</a>
+            <a href="{% url 'creator_projects' creator.slug %}">Projects</a>
+            <a href="{% url 'creator_streams' creator.slug %}">Streams</a>
+          </div>
+          <div style="flex: 1"></div>
+          <i class="ph ph-info" style="font-size: 28pt"></i>
+        </nav>
+        <!-- Page content here -->
+        <div class="flex flex-row" style="position: fixed; left: 0; width: 100vw; height: 100vh;">
+          <div class="flex flex-col bg-neutral text-white" style="flex: 0 0 200pt">
+            {% block left_menu %}{% endblock %}
+          </div>
+          <div class="flex flex-1 flex-col">
+            {% block alerts %}{% endblock %}
+            <div class="flex flex-row items-center p-5"> 
+                <div style="flex: 1"></div>
+                <div>
+                  <a class="btn btn-ghost circle bg-primary text-white">
+                    <i class="ph ph-user"></i>
+                  </a>
+                </div>
+            </div>
+            <div style="display: none" class="flex flex-row items-center p-5">
+              <form method="GET" action="" class="flex flex-1 flex-row items-center gap-2 p-2">
+                {% block title %}{% endblock %}
+                <div style="flex: 1"></div>
+                <select name="project_id" class="select" onchange="event.target.parentNode.submit()">
+                  <option value="">{% trans 'All projects' %}</option>
+                  {% for project in projects %}
+                  <option {% if project_id == project.slug %}selected{% endif %} value="{{ project.slug }}">{{ project.name }}</option>
+                  {% endfor %}
+                </select>
+                <select name="commitment_id" class="select" onchange="event.target.parentNode.submit()">
+                  <option value="">{% trans 'All commitments' %}</option>
+                  {% for commitment in commitments %}
+                  <option {% if commitment_id == commitment.slug %}selected{% endif %} value="{{ commitment.slug }}">{{ commitment.name }}</option>
+                  {% endfor %}
+                </select>
+                <select name="organization_id" class="select" onchange="event.target.parentNode.submit()">
+                  <option value="">{% trans 'All organizations' %}</option>
+                  {% for organization in organizations %}
+                  <option {% if organization_id == organization.slug %}selected{% endif %} value="{{ organization.slug }}">{{ organization.name }}</option>
+                  {% endfor %}
+                </select>
+              </form>
+            </div>
+            <div class="flex flex-row items-center p-5">
+              <form method="GET" action="" class="flex flex-1 flex-row items-center gap-2 p-2">
+                <h3 class="text-3xl">
+                  {% block view_title %}{% endblock %}
+                </h3>
+                <div style="flex: 1"></div>
+                <form method="GET">
+                  {% for n_period in periods %}
+                  <button type="submit" value="{{ n_period.id }}" name="period" class="bt btn-sm {% if period == n_period.id %}btn-neutral{% else %}btn-neutral-500{% endif %}">{% trans n_period.name %}</button>
+                  {% endfor %}
+                  <button name="filters" class="btn btn-sm btn-neutral-500">{% trans 'Filters' %} <i class="ph ph-settings"></i></button>
+                </form>
+                <div style="display: flex; flex-direction: row; align-items: center; gap: 1">
+                  {% block view_actions %} {% endblock %}
+                </div>
+              </form>
+            </div>
+            <div class="flex flex-1 flex-col" style="overflow-y: scroll">
+              {% block page %}{% endblock %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% block bottom_tab_bar %}{% endblock %}
+    </div>
+  </body>
+</html>
