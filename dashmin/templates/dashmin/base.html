@@ -14,8 +14,19 @@
       src="https://code.jquery.com/jquery-4.0.0.js"
       integrity="sha256-9fsHeVnKBvqh3FB2HYu7g2xseAZ5MlN6Kz/qnkASV8U="
       crossorigin="anonymous"></script>
+    <script>
+      function handleCloseFiltersDialogButtonClick(event) {
+        $('#filtersDialog').removeClass('dialog-backdrop-shown');
+      }
+      function handleShowFiltersDialogButtonClick(event) {
+        event.preventDefault()
+        $('#filtersDialog').addClass('dialog-backdrop-shown');
+        return false
+      }
+    </script>
     <title>Workers panel</title>
-    <style type="text/tailwindcss"> 
+    <style type="text/tailwindcss">
+      
       @theme {
         /*--color-primary: rgb(29, 225, 154);
         --color-primary-content: black;*/
@@ -24,7 +35,42 @@
         /*transition: all 0.5s;*/
       }
       @layer components {
-        
+        .dialog-backdrop {
+          position: fixed;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          top: 0;
+          display: none;
+          opacity: 0;
+          animation: visibility 0.5s;
+          background: rgba(0, 0, 0, .5);
+        }
+        .dialog {
+          position: fixed;
+          background: var(--color-white);
+        }
+        .dialog-right {
+          right: -100%;
+          height: 100vh;
+          top: 0;
+          width: 280pt;
+          animation: right 0.5s;
+        }
+        .dialog-backdrop-shown {
+          display: flex;
+          opacity: 1;
+        }
+        .dialog-backdrop-shown .dialog-right {
+          right: 0;
+        }
+        .right {
+          position: fixed;
+          top: 0;
+          right: 0;
+          height: 100%;
+          width: 300pt;
+        }
         .wizard {
           position: fixed;
           width: 100%;
@@ -172,7 +218,7 @@
     />
     {% block head %}
     {% endblock %}
-    <script src="//unpkg.com/alpinejs"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
 
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>  
@@ -483,6 +529,8 @@
         }
       }
     </style>
+    {% block script %}
+    {% endblock %}
     <script>
       function handleSubmit(event) {
         var form = event.target
@@ -529,36 +577,16 @@
             {% block alerts %}{% endblock %}
             <div class="flex flex-row items-center p-5"> 
                 <div style="flex: 1"></div>
+                <form method="GET">
+                  <input type="search" class="input" placeholder="{% trans 'Try a URI, name or title' %}" name="q">
+                </form>
                 <div>
                   <a class="btn btn-ghost circle bg-primary text-white">
                     <i class="ph ph-user"></i>
                   </a>
                 </div>
             </div>
-            <div style="display: none" class="flex flex-row items-center p-5">
-              <form method="GET" action="" class="flex flex-1 flex-row items-center gap-2 p-2">
-                {% block title %}{% endblock %}
-                <div style="flex: 1"></div>
-                <select name="project_id" class="select" onchange="event.target.parentNode.submit()">
-                  <option value="">{% trans 'All projects' %}</option>
-                  {% for project in projects %}
-                  <option {% if project_id == project.slug %}selected{% endif %} value="{{ project.slug }}">{{ project.name }}</option>
-                  {% endfor %}
-                </select>
-                <select name="commitment_id" class="select" onchange="event.target.parentNode.submit()">
-                  <option value="">{% trans 'All commitments' %}</option>
-                  {% for commitment in commitments %}
-                  <option {% if commitment_id == commitment.slug %}selected{% endif %} value="{{ commitment.slug }}">{{ commitment.name }}</option>
-                  {% endfor %}
-                </select>
-                <select name="organization_id" class="select" onchange="event.target.parentNode.submit()">
-                  <option value="">{% trans 'All organizations' %}</option>
-                  {% for organization in organizations %}
-                  <option {% if organization_id == organization.slug %}selected{% endif %} value="{{ organization.slug }}">{{ organization.name }}</option>
-                  {% endfor %}
-                </select>
-              </form>
-            </div>
+            
             <div class="flex flex-row items-center p-5">
               <form method="GET" action="" class="flex flex-1 flex-row items-center gap-2 p-2">
                 <h3 class="text-3xl">
@@ -569,7 +597,7 @@
                   {% for n_period in periods %}
                   <button type="submit" value="{{ n_period.id }}" name="period" class="bt btn-sm {% if period == n_period.id %}btn-neutral{% else %}btn-neutral-500{% endif %}">{% trans n_period.name %}</button>
                   {% endfor %}
-                  <button name="filters" class="btn btn-sm btn-neutral-500">{% trans 'Filters' %} <i class="ph ph-settings"></i></button>
+                  <button name="filters" onclick="handleShowFiltersDialogButtonClick(event)" class="btn btn-sm btn-neutral-500">{% trans 'Filters' %} <i class="ph ph-sliders-horizontal"></i></button>
                 </form>
                 <div style="display: flex; flex-direction: row; align-items: center; gap: 1">
                   {% block view_actions %} {% endblock %}
@@ -604,6 +632,24 @@
       </div>
     </div>
     {% block bottom_tab_bar %}{% endblock %}
+    <div onClick="handleCloseFiltersDialogButtonClick(event)" id="filtersDialog" class="dialog-backdrop">
+      <div onclick="event.stopPropagation()" class="dialog dialog-right flex flex-col items-stretch p-3" id="filters">
+        <form method="GET" action="" class="flex flex-col flex-1">
+          <div class="flex flex-col flex-1" style="border-bottom: 1pt solid rgba(255, 255, 255, .5); overflow-y: scroll">
+            <h3>{% trans 'Time' %}</h3>
+            <optgroup>
+              {% for n_period in periods %}
+              <input type="radio" value="{{ n_period.id }}" name="period" class="bt btn-sm {% if period == n_period.id %}btn-neutral{% else %}btn-neutral-500{% endif %}">{% trans n_period.name %}</button>
+              {% endfor %}
+            </optgroup>
+            {% block list_filters %}{% endblock %}
+          </div>
+          <div class="flex flex-row justify-center items-center gap-3">
+            <button onclick="handleShowFiltersDialogButtonClick(event)">{% trans 'Cancel '%}</button>
+            <button autofocus type="submit" class="btn btn-neutral">{% trans 'Finished' %}</button>
+          </div>
+        </form>
+      </div>
     </div>
   </body>
 </html>
