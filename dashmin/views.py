@@ -116,3 +116,129 @@ class DashminModelUpdateView(DashminViewMixin, UpdateView):
     def get_context_data(self, **kwargs):
         ret = super().get_context_data(**kwargs)
         return ret
+
+
+class ModelCreateView(CreateView):
+    model = Model
+
+    def get_template_names(self):
+        ret = super().get_template_names()
+        ret.append(self.dashboard.get_create_template())
+        return ret
+
+    def get_context_data(self, **kwargs):
+        ret = super().get_context_data(**kwargs)
+        return ret
+
+
+class ModelListView(ListView):
+    list_filters = []
+    model = Model
+
+    def get_user_queryset(self, queryset):
+        return queryset
+
+    def get_filter_queryset(self, queryset):
+        return self.get_user_queryset(queryset)
+
+    def get_context_data(self, **kwargs):
+        ret = super().get_context_data(**kwargs)
+
+        app_id = self.kwargs.get('app')
+        model_id = self.kwargs.get('model')
+        self.model = apps.get_model(app_id, model_id)
+
+        if hasattr(self.model, 'list_filters'):
+            self.list_filters = getattr(self.model, 'list_filters')
+
+        filters = []
+
+        for fieldname in self.list_filters:
+            field_object, model, direct, m2m = model._meta.get_field_by_name(fieldname)
+            if not m2m and direct and isinstance(field_object, ForeignKey):
+                queryset = self.get_filter_queryset(model.objects)
+                node_ids = self.request.GET.getlist(fieldname + '_id')
+                nodes = queryset.filter(
+                    id__in=node_ids
+                )
+                queryset = self.get_filter_queryset(model.objects)
+                filters.append({
+                    'id': fieldname,
+                    'objects': queryset,
+                    'type': 'belongsTo',
+                    'nodes': nodes
+                })
+
+            elif not m2m and direct and isinstance(field_object, ManyToManyField):
+                node_ids = self.request.GET.getlist(fieldname + '_id')
+                queryset = self.get_filter_queryset(model.objects)
+                filters.append({
+                    'id': fieldname,
+                    'objects': queryset,
+                    'type': 'm2m'
+                })
+            else:
+                if isinstance(field_object, IntegerField):
+                    filters.append({
+                        'id': fieldname,
+                        'type': 'int'
+                    })
+                elif isinstance(field_object, FloatField):
+                    filters.append({
+                        'id': fieldname,
+                        'type': 'float'
+                    })
+                elif isinstance(field_object, DateTimeField):
+                    filters.append({
+                        'id': fieldname,
+                        'type': 'datetime'
+                    })
+                elif isinstance(field_object, DateField):
+                    filters.append({
+                        'id': fieldname,
+                        'type': 'date'
+                    })
+
+            ret['filters'] = filters
+            return ret
+
+    def get_queryset(self, *args, **kwargs):
+        app_id = self.kwargs.get('app')
+        model_id = self.kwargs.get('model')
+        self.model = apps.get_model(app_id, model_id)
+
+        self.list_filters = []
+        if hasattr(self.model, 'list_filters'):
+            self.list_filters = getattr(self.model, 'list_filters')
+
+        queryset = super().get_queryset(*args, **kwargs)
+        filters = {}
+        for fieldname in self.list_filters:
+            field_object, model, direct, m2m = model._meta.get_field_by_name(fieldname)
+            if not m2m and direct and isinstance(field_object, ForeignKey):
+                node_ids = self.request.GET.getlist(fieldname + '_id')
+                node = model.objects.get(
+                    id__in=node_ids
+                )
+                filters[fieldname + '__in'] = node
+            elif not m2m and direct and isinstance(field_object, ManyToManyField):
+                node_ids = self.request.GET.getlist(fieldname + '_id')
+                nodes = model.objects.filter(
+                    id__in=node_ids
+                )
+                filters[fieldname + '__in'] = nodes
+            else:
+                field_id = fieldname.split('__')[0]
+                value = self.request.GET.get(fieldname)
+                if isinstance(field_object, IntegerField):
+                    filters[fieldname] = int(value)
+                elif isinstance(field_object, FloatField):
+                    filters[fieldname] = float(value)
+                elif isinstance(field_object, DateTimeField):
+                    filters[fieldname] = parse(value)
+                elif isinstance(field_object, DateField):
+                    filters[fieldname] = parse(value)
+
+            queryset = queryset.filter(**filters)
+
+        return queryset
