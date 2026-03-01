@@ -118,8 +118,24 @@ class DashminModelUpdateView(DashminViewMixin, UpdateView):
         return ret
 
 
+class ModelUpdateView(UpdateView):
+    model = Model
+
+    template_name = 'dashmin/[app_id]/[model_id]/[node_id]/update.html'
+
+    def get_template_names(self):
+        ret = super().get_template_names()
+        ret.append(self.dashboard.get_create_template())
+        return ret
+
+    def get_context_data(self, **kwargs):
+        ret = super().get_context_data(**kwargs)
+        return ret
+
+
 class ModelCreateView(CreateView):
     model = Model
+    template_name = 'dashmin/[app_id]/[model_id]/create.html'
 
     def get_template_names(self):
         ret = super().get_template_names()
@@ -133,7 +149,10 @@ class ModelCreateView(CreateView):
 
 class ModelListView(ListView):
     list_filters = []
+    list_display = ['name']
+
     model = Model
+    template_name = 'dashmin/[app_id]/[model_id]/index.html'
 
     def get_user_queryset(self, queryset):
         return queryset
@@ -144,12 +163,14 @@ class ModelListView(ListView):
     def get_context_data(self, **kwargs):
         ret = super().get_context_data(**kwargs)
 
-        app_id = self.kwargs.get('app')
-        model_id = self.kwargs.get('model')
+        app_id = self.kwargs.get('app_id')
+        model_id = self.kwargs.get('model_id')
         self.model = apps.get_model(app_id, model_id)
 
         if hasattr(self.model, 'list_filters'):
             self.list_filters = getattr(self.model, 'list_filters')
+
+        ret['list_display'] = self.list_display
 
         filters = []
 
@@ -200,11 +221,12 @@ class ModelListView(ListView):
                     })
 
             ret['filters'] = filters
-            return ret
+
+        return ret
 
     def get_queryset(self, *args, **kwargs):
-        app_id = self.kwargs.get('app')
-        model_id = self.kwargs.get('model')
+        app_id = self.kwargs.get('app_id')
+        model_id = self.kwargs.get('model_id')
         self.model = apps.get_model(app_id, model_id)
 
         self.list_filters = []

@@ -1,4 +1,4 @@
-{% extends "hourly/dashboard/creator/base.html" %}
+{% extends "dashmin/base.html" %}
 {% load i18n %}
 {% load tailwind_filters %}
 {% block page %}
@@ -20,7 +20,7 @@
   </div>
   <div class="wizard-footer">
     <div style="flex: 1"></div>
-    <button class="btn btn-primary" type="submit">{% trans model.name %}</button>
+    <button class="btn btn-primary loadable" type="submit">{% trans model.name %}</button>
   </div>
 </form>
 {% endblock %}

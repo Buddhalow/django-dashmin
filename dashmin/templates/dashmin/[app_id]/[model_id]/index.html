@@ -1,4 +1,4 @@
-{% extends "dashbmin/base.html" %}
+{% extends "dashmin/base.html" %}
 {% load i18n %}
 {% load humanize %}
 {% block title %}<h1 class="text-2xl">{% trans model.name %}</h1>{% endblock %}
@@ -19,7 +19,7 @@
         <tr>
           {% for field in list_display %}
           <td> 
-            <a href="{% url 'node_overview' app_id node.id %}">{{ node.name }}</a> 
+            <a href="./{{ node.slug }}">{{ node.name }}</a> 
           </td>
           {% endfor %} 
         </tr>

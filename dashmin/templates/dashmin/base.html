@@ -24,12 +24,12 @@
         return false
       }
     </script>
-    <title>Workers panel</title>
+    <title>{% block title %}{% endblock %}</title>
     <style type="text/tailwindcss">
-      
       @theme {
         /*--color-primary: rgb(29, 225, 154);
         --color-primary-content: black;*/
+        {% block theme %}{% endblock %}
       }
       * {
         /*transition: all 0.5s;*/
@@ -159,53 +159,71 @@
           }
         }
 
-      .shiny {
-        background-image: repeating-linear-gradient(
-          101deg,
-          rgba(255, 255, 255, 0.5),
-          rgba(0, 0, 0, 0.5),
-          rgba(255, 255, 255, 0.5)
-        ) !important;
-        animation: 5s infinite alternate bg-scroll-x;
-      }
-      
-      a.clicked {
-        /*
-        background-image: repeating-linear-gradient(
-          101deg,
-          rgba(255, 255, 255,1),
-          rgba(200, 200, 200, 1),
-          rgba(255, 255, 255, 1)
-        ) !important;
-        border: 1pt solid #888;
-        color: black !important;
-        animation: 5s infinite alternate bg-scroll-x;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        */
-      }
-      .btn.clicked {
+        .shiny {
+          background-image: repeating-linear-gradient(
+            101deg,
+            rgba(255, 255, 255, 0.5),
+            rgba(0, 0, 0, 0.5),
+            rgba(255, 255, 255, 0.5)
+          ) !important;
+          animation: 5s infinite alternate bg-scroll-x;
+        }
+        a:hover {
+          text-decoration: underline;
+        }
+        button.a:hover {
+          text-decoration: unset;
+        }
+        a.clicked {
+          /*
+          background-image: repeating-linear-gradient(
+            101deg,
+            rgba(255, 255, 255,1),
+            rgba(200, 200, 200, 1),
+            rgba(255, 255, 255, 1)
+          ) !important;
+          border: 1pt solid #888;
+          color: black !important;
+          animation: 5s infinite alternate bg-scroll-x;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          */
+          opacity: 0.5;
+        }
+        .btn.clicked {
 
-        background-image: repeating-linear-gradient(
-          101deg,
-          rgba(255, 255, 255, 0.5),
-          rgba(200, 200, 200, 0.5),
-          rgba(255, 255, 255, 0.5)
-        );
-        background-clip: initial;
-        animation: 5s infinite alternate bg-scroll-x;
-        
-      }
-      @keyframes bg-scroll-x {
-        from {
-          background-position: 0 0;
+          /*background-image: repeating-linear-gradient(
+            101deg,
+            rgba(255, 255, 255, 0.5),
+            rgba(200, 200, 200, 0.5),
+            rgba(255, 255, 255, 0.5)
+          );
+          background-clip: initial;
+          animation: 5s infinite alternate bg-scroll-x;
+          */
         }
-        to {
-          background-position: -100pt 0;
+        @keyframes bg-scroll-x {
+          from {
+            background-position: 0 0;
+          }
+          to {
+            background-position: -100pt 0;
+          }
         }
-      }
+        .loading-overlay {
+          display: none;
+          pointer-events: none;
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          background: color-mix(in srgb, var(--color-base-100), transparent 20%);
+        }
       }
     </style>
+    {% block style %}
+    {% endblock %}
     <link
       rel="stylesheet"
       type="text/css"
@@ -218,8 +236,8 @@
     />
     {% block head %}
     {% endblock %}
-    <script src="//unpkg.com/alpinejs" defer></script>
-
+    <script src="//unpkg.com/alpinejs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pinecone-router@7.5.0/dist/router.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>  
     <script>
@@ -235,6 +253,11 @@
           reachDiv.innerHTML = `${reach?.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
         }
       }
+      window.addEventListener('pageshow', (event) => {
+
+        $('.loading-overlay').hide();
+        $('a,button').removeClass('clicked')
+      })
       window.addEventListener('load', () => {
         setInterval(() => {
           renderLive()
@@ -245,26 +268,30 @@
             return true;
           }
           $(event.target).addClass('clicked')
-          $(event.target).html(`
+          /*$(event.target).html(`
             <div class="pulse-dots">
               <div style="--number: 0" class="dot"></div>
               <div style="--number: 1" class="dot"></div>
               <div style="--number: 2" class="dot"></div>
             </div>
-          `);
+          `);*/
+        })
+        $('form').on('submit', (event) => {
+          $('.loading-overlay').show();
         })
         $('body').on('click', 'button.loadable', (event) => {
           if ($(event.target).hasClass('clicked')) {
             return true;
           }
           $(event.target).addClass('clicked')
-          $(event.target).html(`
+          /*$(event.target).html(`
             <div class="pulse-dots">
               <div style="--number: 0" class="dot"></div>
               <div style="--number: 1" class="dot"></div>
               <div style="--number: 2" class="dot"></div>
             </div>
-          `)
+          `)*/
+          $('.loading-overlay').show();
         })
       })
     </script>
@@ -312,8 +339,6 @@
         font-optical-sizing: auto;
         font-weight: 520;
         letter-spacing: -0.005em;
-
-        color: rgba(0,0,0,0.92);
 
         text-shadow:
           0.3px 0 rgba(0,0,0,0.35),
@@ -552,7 +577,7 @@
 
     </script>
   </head>
-  <body class="">
+  <body class="{% block body_class %}{% endblock %}">
     <div class="drawer md:drawer-open lg:drawer-open">
       <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content" >
@@ -580,10 +605,14 @@
                 <form method="GET">
                   <input type="search" class="input" placeholder="{% trans 'Try a URI, name or title' %}" name="q">
                 </form>
-                <div>
-                  <a class="btn btn-ghost circle bg-primary text-white">
+                <div class="dropdown">
+                  <button tabindex="0" role="button" class="btn btn-ghost circle bg-primary text-white">
                     <i class="ph ph-user"></i>
-                  </a>
+                  </button>
+                  <ul tabindex="-1" id="account-menu" class="menu menu-compact dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                    {% block account_menu %}{% endblock %}
+                    <li><a href="/accounts/logout">{% trans 'Log out' %}</a></li>
+                  </ul>
                 </div>
             </div>
             
@@ -651,5 +680,6 @@
         </form>
       </div>
     </div>
+    <div class="loading-overlay"></div>
   </body>
 </html>
