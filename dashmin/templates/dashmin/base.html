@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://static.spacify.se/spacify/css/Bungalow-Sans.css" rel="stylesheet" type="text/css">
+
     <script
       src="https://code.jquery.com/jquery-4.0.0.js"
       integrity="sha256-9fsHeVnKBvqh3FB2HYu7g2xseAZ5MlN6Kz/qnkASV8U="
@@ -30,6 +32,10 @@
         /*--color-primary: rgb(29, 225, 154);
         --color-primary-content: black;*/
         {% block theme %}{% endblock %}
+      }
+      body, button, input {
+        font-weight: 700;
+        font-family: "Bungalow Sans Hollow";
       }
       * {
         /*transition: all 0.5s;*/
@@ -333,11 +339,10 @@
         cursor: pointer;
       }
       body {
-        font-family: Lato, serif;
-        font-weight: 100 900;
+        font-family: "Bungalow Sans Hollow", serif;
+        font-weight: 700;
         font-family:rgba(130, 99, 99, 0.1);
         font-optical-sizing: auto;
-        font-weight: 520;
         letter-spacing: -0.005em;
 
         text-shadow:
@@ -582,7 +587,7 @@
       <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content" >
         <!-- Navbar -->
-        <nav style="display: none" class="navbar flex flex-row bg-black text-white w-full gap-1 p-3">
+        <nav class="navbar flex lg:hidden flex-row bg-black text-white w-full gap-1 p-3">
           <label for="my-drawer-4" aria-label="open sidebar" class="btn btn-square btn-ghost text-white">
             <i class="ph ph-house" style="font-size: 28pt"></i>
           </label>
@@ -595,7 +600,7 @@
         </nav>
         <!-- Page content here -->
         <div class="flex flex-row" style="position: fixed; left: 0; width: 100vw; height: 100vh;">
-          <div class="flex flex-col bg-neutral text-white" style="flex: 0 0 200pt">
+          <div class="hidden lg:flex flex-col bg-neutral text-white" style="flex: 0 0 200pt">
             {% block left_menu %}{% endblock %}
           </div>
           <div class="flex flex-1 flex-col">
