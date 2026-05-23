@@ -6,10 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
     <link href="https://static.spacify.se/spacify/css/Bungalow-Sans.css" rel="stylesheet" type="text/css">
 
     <script
@@ -27,205 +24,169 @@
       }
     </script>
     <title>{% block title %}{% endblock %}</title>
-    <style type="text/tailwindcss">
-      @theme {
-        /*--color-primary: rgb(29, 225, 154);
-        --color-primary-content: black;*/
+    <style>
+      :root {
         {% block theme %}{% endblock %}
       }
       body, button, input {
         font-weight: 700;
         font-family: "Bungalow Sans Hollow";
       }
-      * {
-        /*transition: all 0.5s;*/
+      .dialog-backdrop {
+        position: fixed;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        display: none;
+        opacity: 0;
+        animation: visibility 0.5s;
+        background: rgba(0, 0, 0, .5);
       }
-      @layer components {
-        .dialog-backdrop {
-          position: fixed;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          top: 0;
-          display: none;
-          opacity: 0;
-          animation: visibility 0.5s;
-          background: rgba(0, 0, 0, .5);
-        }
-        .dialog {
-          position: fixed;
-          background: var(--color-white);
-        }
-        .dialog-right {
-          right: -100%;
-          height: 100vh;
-          top: 0;
-          width: 280pt;
-          animation: right 0.5s;
-        }
-        .dialog-backdrop-shown {
-          display: flex;
-          opacity: 1;
-        }
-        .dialog-backdrop-shown .dialog-right {
-          right: 0;
-        }
-        .right {
-          position: fixed;
-          top: 0;
-          right: 0;
-          height: 100%;
-          width: 300pt;
-        }
-        .wizard {
-          position: fixed;
-          width: 100%;
-          height: 100%;
-          left: 0;
-          top: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: stretch;
-        }
-        .wizard-header {
-          padding: 10pt;
-          display: flex;
-          flex-direction: row;
-          border-bottom: 1pt solid rgba(127, 127, 127, .5);
-        }
-        .wizard-content {
-          overflow-y: scroll;
-          flex: 1;
-        }
-        .wizard-bottom, .wizard-footer {
-          padding: 10pt;
-          display: flex;
-          flex-direction: row;
-          border-top: 1pt solid rgba(127, 127, 127, .1);
-        }
-        .circle {
-          border-radius: 100%;
-          width: 32pt;
-          aspect-ratio: 1/1;
-          display: flex;
-          align-items: center;
-          justify-content: center;          
-        }
-        .btn {
-          border-radius: calc(infinity * 1px);
-          --btn-shadow: none;
-          @variant hover {
-            transform: scale(1.05) !important;
-          }
-          @variant active {
-            transform: scale(1) !important;
-          }
-        }
-        .skeudomorph {
-          
-          --color-primary-content: white;
-          .table th, .well, .wizard-header, .wizard-footer { 
-            background: linear-gradient(180deg, #fff, #ddd);
-            text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
-            box-shadow: 0 1px 0 #fafafa;
-          }
-          .table th {
-            border-right: 1px solid rgba(200, 200, 200, 1);
-            border-bottom: 1px solid rgba(200, 200, 200, 1);
-            border-top: 1px solid rgba(200, 200, 200, 1);
-            
-          }
-          .table th:first-child {
-            border-left: 1px solid rgba(200, 200, 200, 1);
-          }
-          .btn-soft {
-            border: 1px solid color-mix(in srgb, var(--btn-bg), black 50%);
-            background: linear-gradient(180deg,  color-mix(in srgb, var(--btn-bg), white 50%), color-mix(in srgb, var(--btn-bg), black 20%));
-            text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
-            box-shadow: inset 0 1px 0 color-mix(in srgb, var(--btn-bg), white 80%);
-            color: var(--btn-fg);
-            @variant active {
-              box-shadow: inset 0 1px 0 color-mix(in srgb, var(--btn-bg), black 80%);
-              background: linear-gradient(180deg, color-mix(in srgb, var(--btn-bg), black 80%), color-mix(in srgb, var(--btn-bg), black 70%));
-            }
-          }
-          .btn-primary {
-            border: none !important;
-          }
-          .select, .input {
-            box-shadow:inset 1pt 1pt 5px rgba(0, 0, 0, .5);
-            border: 1px solid #333;
-            border-right: 1px solid #aaa;
-            border-radius: 0;
-            border-bottom: 1px solid #aaa;
-            &:focus {
-              outline: none;
-              box-shadow:inset 1pt 1pt 5px rgba(0, 0, 0, .5), 0 0 8pt var(--color-spacify);
-            }
-          }
-        }
-
-        .shiny {
-          background-image: repeating-linear-gradient(
-            101deg,
-            rgba(255, 255, 255, 0.5),
-            rgba(0, 0, 0, 0.5),
-            rgba(255, 255, 255, 0.5)
-          ) !important;
-          animation: 5s infinite alternate bg-scroll-x;
-        }
-        a:hover {
-          text-decoration: underline;
-        }
-        button.a:hover {
-          text-decoration: unset;
-        }
-        a.clicked {
-          /*
-          background-image: repeating-linear-gradient(
-            101deg,
-            rgba(255, 255, 255,1),
-            rgba(200, 200, 200, 1),
-            rgba(255, 255, 255, 1)
-          ) !important;
-          border: 1pt solid #888;
-          color: black !important;
-          animation: 5s infinite alternate bg-scroll-x;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-          */
-          opacity: 0.5;
-        }
-        .btn.clicked {
-
-          /*background-image: repeating-linear-gradient(
-            101deg,
-            rgba(255, 255, 255, 0.5),
-            rgba(200, 200, 200, 0.5),
-            rgba(255, 255, 255, 0.5)
-          );
-          background-clip: initial;
-          animation: 5s infinite alternate bg-scroll-x;
-          */
-        }
-        @keyframes bg-scroll-x {
-          from {
-            background-position: 0 0;
-          }
-          to {
-            background-position: -100pt 0;
-          }
-        }
-        .loading-overlay {
-          display: none;
-          pointer-events: none;
-          position: fixed;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-          background: color-mix(in srgb, var(--color-base-100), transparent 20%);
-        }
+      .dialog {
+        position: fixed;
+        background: var(--color-white, white);
+      }
+      .dialog-right {
+        right: -100%;
+        height: 100vh;
+        top: 0;
+        width: 280pt;
+        animation: right 0.5s;
+      }
+      .dialog-backdrop-shown {
+        display: flex;
+        opacity: 1;
+      }
+      .dialog-backdrop-shown .dialog-right {
+        right: 0;
+      }
+      .right {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 300pt;
+      }
+      .wizard {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .wizard-header {
+        padding: 10pt;
+        display: flex;
+        flex-direction: row;
+        border-bottom: 1pt solid rgba(127, 127, 127, .5);
+      }
+      .wizard-content {
+        overflow-y: scroll;
+        flex: 1;
+      }
+      .wizard-bottom, .wizard-footer {
+        padding: 10pt;
+        display: flex;
+        flex-direction: row;
+        border-top: 1pt solid rgba(127, 127, 127, .1);
+      }
+      .circle {
+        border-radius: 100%;
+        width: 32pt;
+        aspect-ratio: 1/1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn {
+        border-radius: 9999px;
+        --btn-shadow: none;
+      }
+      .btn:hover {
+        transform: scale(1.05) !important;
+      }
+      .btn:active {
+        transform: scale(1) !important;
+      }
+      .skeudomorph {
+        --color-primary-content: white;
+      }
+      .skeudomorph .table th,
+      .skeudomorph .well,
+      .skeudomorph .wizard-header,
+      .skeudomorph .wizard-footer {
+        background: linear-gradient(180deg, #fff, #ddd);
+        text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+        box-shadow: 0 1px 0 #fafafa;
+      }
+      .skeudomorph .table th {
+        border-right: 1px solid rgba(200, 200, 200, 1);
+        border-bottom: 1px solid rgba(200, 200, 200, 1);
+        border-top: 1px solid rgba(200, 200, 200, 1);
+      }
+      .skeudomorph .table th:first-child {
+        border-left: 1px solid rgba(200, 200, 200, 1);
+      }
+      .skeudomorph .btn-soft {
+        border: 1px solid color-mix(in srgb, var(--btn-bg), black 50%);
+        background: linear-gradient(180deg, color-mix(in srgb, var(--btn-bg), white 50%), color-mix(in srgb, var(--btn-bg), black 20%));
+        text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+        box-shadow: inset 0 1px 0 color-mix(in srgb, var(--btn-bg), white 80%);
+        color: var(--btn-fg);
+      }
+      .skeudomorph .btn-soft:active {
+        box-shadow: inset 0 1px 0 color-mix(in srgb, var(--btn-bg), black 80%);
+        background: linear-gradient(180deg, color-mix(in srgb, var(--btn-bg), black 80%), color-mix(in srgb, var(--btn-bg), black 70%));
+      }
+      .skeudomorph .btn-primary {
+        border: none !important;
+      }
+      .skeudomorph .select, .skeudomorph .input {
+        box-shadow: inset 1pt 1pt 5px rgba(0, 0, 0, .5);
+        border: 1px solid #333;
+        border-right: 1px solid #aaa;
+        border-radius: 0;
+        border-bottom: 1px solid #aaa;
+      }
+      .skeudomorph .select:focus, .skeudomorph .input:focus {
+        outline: none;
+        box-shadow: inset 1pt 1pt 5px rgba(0, 0, 0, .5), 0 0 8pt var(--color-spacify);
+      }
+      .shiny {
+        background-image: repeating-linear-gradient(
+          101deg,
+          rgba(255, 255, 255, 0.5),
+          rgba(0, 0, 0, 0.5),
+          rgba(255, 255, 255, 0.5)
+        ) !important;
+        animation: 5s infinite alternate bg-scroll-x;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      button.a:hover {
+        text-decoration: unset;
+      }
+      a.clicked {
+        opacity: 0.5;
+      }
+      @keyframes bg-scroll-x {
+        from { background-position: 0 0; }
+        to { background-position: -100pt 0; }
+      }
+      .loading-overlay {
+        display: none;
+        pointer-events: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
       }
     </style>
     {% block style %}
@@ -244,8 +205,7 @@
     {% endblock %}
     <script src="//unpkg.com/alpinejs"></script>
     <script src="https://cdn.jsdelivr.net/npm/pinecone-router@7.5.0/dist/router.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     <script>
       function calculateLive() {
         var rand = Math.random() * 100000;
@@ -260,51 +220,37 @@
         }
       }
       window.addEventListener('pageshow', (event) => {
-
         $('.loading-overlay').hide();
         $('a,button').removeClass('clicked')
       })
       window.addEventListener('load', () => {
-        setInterval(() => {
-          renderLive()
-        }, 5000)
+        setInterval(() => { renderLive() }, 5000)
         renderLive();
         $('body').on('click', 'a', (event) => {
-          if ($(event.target).hasClass('clicked')) {
-            return true;
-          }
+          if ($(event.target).hasClass('clicked')) { return true; }
           $(event.target).addClass('clicked')
-          /*$(event.target).html(`
-            <div class="pulse-dots">
-              <div style="--number: 0" class="dot"></div>
-              <div style="--number: 1" class="dot"></div>
-              <div style="--number: 2" class="dot"></div>
-            </div>
-          `);*/
         })
         $('form').on('submit', (event) => {
           $('.loading-overlay').show();
         })
         $('body').on('click', 'button.loadable', (event) => {
-          if ($(event.target).hasClass('clicked')) {
-            return true;
-          }
+          if ($(event.target).hasClass('clicked')) { return true; }
           $(event.target).addClass('clicked')
-          /*$(event.target).html(`
-            <div class="pulse-dots">
-              <div style="--number: 0" class="dot"></div>
-              <div style="--number: 1" class="dot"></div>
-              <div style="--number: 2" class="dot"></div>
-            </div>
-          `)*/
           $('.loading-overlay').show();
         })
+        /* Bulma dropdown toggle */
+        document.querySelectorAll('.dropdown:not(.is-hoverable)').forEach((dropdown) => {
+          dropdown.querySelector('.dropdown-trigger button')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('is-active');
+          });
+        });
+        document.addEventListener('click', () => {
+          document.querySelectorAll('.dropdown.is-active').forEach((d) => d.classList.remove('is-active'));
+        });
       })
     </script>
     <style>
-      /*@view-transition {
-        navigation: auto;
-      }*/
       .tab-bar {
         display: flex;
         flex-direction: row;
@@ -331,9 +277,6 @@
       .tab-bar-tab-active .tab-bar-tab-underline {
         visibility: visible;
       }
-      :root {
-        --daisy-btn-shadow: none;
-      }
       tr:hover td {
         background: rgba(127, 127, 127, .1);
         cursor: pointer;
@@ -341,28 +284,24 @@
       body {
         font-family: "Bungalow Sans Hollow", serif;
         font-weight: 700;
-        font-family:rgba(130, 99, 99, 0.1);
         font-optical-sizing: auto;
         letter-spacing: -0.005em;
-
         text-shadow:
           0.3px 0 rgba(0,0,0,0.35),
-        -0.3px 0 rgba(0,0,0,0.2);
+          -0.3px 0 rgba(0,0,0,0.2);
       }
       .pulse-dots {
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        gap: 5pt; 
+        gap: 5pt;
         animation: pulser-scale 2.5s infinite ease-in-out;
-        
         --dots: 3;
-
       }
       .pulse-dots .dot {
         counter-increment: pulse;
-        width: 10pt; 
+        width: 10pt;
         height: 10pt;
         border-radius: 100%;
         background: currentColor;
@@ -371,101 +310,33 @@
         opacity: 0.5;
         animation-delay: calc(var(--number) * 0.25s);
       }
-
       @keyframes pulser-scale {
-        0% {
-          transform: scale(1);
-        }
-        25% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.5);
-        }
-        75% {
-          transform: scale(1);
-        }
-        100% {
-          transform: scale(1);
-        }
+        0%   { transform: scale(1); }
+        25%  { transform: scale(1); }
+        50%  { transform: scale(1.5); }
+        75%  { transform: scale(1); }
+        100% { transform: scale(1); }
       }
       @keyframes pulse-scale {
-        0% {
-          transform: scale(0.5); 
-        } 
-        20% {
-          transform: scale(1);
-        }
-        30% {
-          transform: scale(0.5); 
-        }
-        100% {
-          transform: scale(0.5); 
-        }
+        0%   { transform: scale(0.5); }
+        20%  { transform: scale(1); }
+        30%  { transform: scale(0.5); }
+        100% { transform: scale(0.5); }
       }
-
-
       @keyframes pulse-opacity {
-        0% { 
-          opacity: 0.5;
-        } 
-        20% { 
-          opacity: 1;
-        }
-        30% { 
-          opacity: 1;
-        }
-        100% { 
-          opacity: 0.5;
-        }
+        0%   { opacity: 0.5; }
+        20%  { opacity: 1; }
+        30%  { opacity: 1; }
+        100% { opacity: 0.5; }
       }
-
-      @keyframes pulse-x {
-        0% {
-          transform: scale(calc(0.5 + (var(--pulse-scale) * (counter(pulse) 0))));
-          opacity: 1;
-        }
-        25% {
-          transform: scale(calc(0.5 + (var(--pulse-scale) * (counter(pulse) + 1))));
-          opacity: 1;
-        }
-        50% {
-          transform: scale(calc(0.5 + (var(--pulse-scale) * (counter(pulse) + 2))));
-          opacity: calc(1 * (counter(pulse) / 2));
-        }
-        75% {
-          transform: scale(calc(0.5 + (var(--pulse-scale) * (counter(pulse) + 2))));
-          opacity: calc(1 * (counter(pulse) + 2));
-        }
-        100% {
-          transform: scale(calc(0.5 + (var(--pulse-scale) * (counter(pulse) + 3))));
-          opacity: 1;
-        }
-      }
-
-      @keyframes pulse-y {
-        0% {
-          transform: scale(calc(1 + (var(--pulse-scale) * (counter(pulse) + 1))));
-          opacity: 1;
-        }
-        33% {
-          transform: scale(calc(1 + (var(--pulse-scale) * (counter(pulse) + 2))));
-          opacity: 1;
-        }
-        33% {
-          transform: scale(calc(1 + (var(--pulse-scale) * (counter(pulse) + 3))));
-          opacity: 1;
-        }
-      }
-
-      .btn:hover {
+      .button:hover, .btn:hover {
         transform: scale(1.01) !important;
       }
-      .btn:active {
+      .button:active, .btn:active {
         transform: scale(0.99) !important;
         opacity: 0.5 !important;
       }
-      .btn:focus {
+      .button:focus, .btn:focus {
         outline: 2pt solid black !important;
         outline-offset: 2pt;
       }
@@ -477,8 +348,6 @@
         display: flex;
         flex-direction: column;
         align-items: stretch;
-      }
-      .bottom-tab-bar {
       }
       .bottom-tab-bar ul {
         display: flex;
@@ -504,14 +373,24 @@
       button:active, a:active {
         transform: scale(1) !important;
       }
-      .container {
-        margin-left: 15%;
-        margin-right: 15%;
+      .dashmin-sidebar {
+        flex: 0 0 200pt;
+        display: flex;
+        flex-direction: column;
+        background-color: #363636;
+        color: white;
       }
-      @media screen and (max-width: 720pt) {
-        .container {
-          margin-left: 0;
-          margin-right: 0;
+      @media screen and (max-width: 1023px) {
+        .dashmin-sidebar {
+          display: none !important;
+        }
+      }
+      .dashmin-mobile-nav {
+        display: none;
+      }
+      @media screen and (max-width: 1023px) {
+        .dashmin-mobile-nav {
+          display: flex;
         }
       }
       :root {
@@ -521,15 +400,12 @@
         --gutter-width: calc(calc(var(--size) - var(--bar-width) * 3) / 2);
         --bar-color: currentColor;
       }
-
       .icon-bars {
         margin: 10px;
         position: relative;
         width: var(--size);
         height: var(--size);
-          
       }
-
       .bar {
         position: absolute;
         bottom: 0;
@@ -538,25 +414,19 @@
         width: var(--bar-width);
         background-color: var(--bar-color);
         animation: up-down var(--speed) infinite;
-        &:nth-child(2)   {
-          left: calc(var(--bar-width) + var(--gutter-width));
-          animation-delay: calc(var(--speed) / 3 * 2);
-        }
-        &:nth-child(3) {
-          left: calc(var(--bar-width) * 2 + var(--gutter-width) * 2);
-          animation-delay: calc(var(--speed) / 3);
-        }
+      }
+      .bar:nth-child(2) {
+        left: calc(var(--bar-width) + var(--gutter-width));
+        animation-delay: calc(var(--speed) / 3 * 2);
+      }
+      .bar:nth-child(3) {
+        left: calc(var(--bar-width) * 2 + var(--gutter-width) * 2);
+        animation-delay: calc(var(--speed) / 3);
       }
       @keyframes up-down {
-        from {
-          top: var(--size);
-        }
-        50% {
-          top: 0;
-        }
-        to {
-          top: var(--size);
-        }
+        from { top: var(--size); }
+        50%  { top: 0; }
+        to   { top: var(--size); }
       }
     </style>
     {% block script %}
@@ -575,116 +445,130 @@
               <div style="--number: 2" class="dot"></div>
             </div>
           `;
-
         }
       }
-
-
     </script>
   </head>
   <body class="{% block body_class %}{% endblock %}">
-    <div class="drawer md:drawer-open lg:drawer-open">
-      <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content" >
-        <!-- Navbar -->
-        <nav class="navbar flex lg:hidden flex-row bg-black text-white w-full gap-1 p-3">
-          <label for="my-drawer-4" aria-label="open sidebar" class="btn btn-square btn-ghost text-white">
+    <div style="position: fixed; left: 0; width: 100vw; height: 100vh; display: flex; flex-direction: column;">
+      <!-- Mobile navbar (hidden on desktop) -->
+      <nav class="navbar is-black dashmin-mobile-nav" style="flex-direction: row; gap: 0.25rem; padding: 0.75rem;">
+        <div class="navbar-brand">
+          <button class="button is-ghost has-text-white" style="padding: 0.5rem; border: none; background: transparent;">
             <i class="ph ph-house" style="font-size: 28pt"></i>
-          </label>
-          <div style="flex: 1"></div>
-          <div class="navbar-center gap-1">
-            {% block top_menu %}{% endblock %}
-          </div>
-          <div style="flex: 1"></div>
-          <i class="ph ph-info" style="font-size: 28pt"></i>
-        </nav>
-        <!-- Page content here -->
-        <div class="flex flex-row" style="position: fixed; left: 0; width: 100vw; height: 100vh;">
-          <div class="hidden lg:flex flex-col bg-neutral text-white" style="flex: 0 0 200pt">
-            {% block left_menu %}{% endblock %}
-          </div>
-          <div class="flex flex-1 flex-col">
-            {% block alerts %}{% endblock %}
-            <div class="flex flex-row items-center p-5"> 
-                <div style="flex: 1"></div>
-                <form method="GET">
-                  <input type="search" class="input" placeholder="{% trans 'Try a URI, name or title' %}" name="q">
-                </form>
-                <div class="dropdown">
-                  <button tabindex="0" role="button" class="btn btn-ghost circle bg-primary text-white">
-                    <i class="ph ph-user"></i>
-                  </button>
-                  <ul tabindex="-1" id="account-menu" class="menu menu-compact dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-                    {% block account_menu %}{% endblock %}
-                    <li><a href="/accounts/logout">{% trans 'Log out' %}</a></li>
-                  </ul>
+          </button>
+        </div>
+        <div style="flex: 1;"></div>
+        <div class="navbar-end" style="gap: 0.25rem;">
+          {% block top_menu %}{% endblock %}
+        </div>
+        <div style="flex: 1;"></div>
+        <i class="ph ph-info" style="font-size: 28pt; color: white;"></i>
+      </nav>
+
+      <!-- Main layout row -->
+      <div style="flex: 1; display: flex; flex-direction: row; overflow: hidden;">
+        <!-- Left sidebar (hidden on mobile/tablet) -->
+        <aside class="dashmin-sidebar">
+          {% block left_menu %}{% endblock %}
+        </aside>
+
+        <!-- Content column -->
+        <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+          {% block alerts %}{% endblock %}
+
+          <!-- Top bar: search + account -->
+          <div style="display: flex; flex-direction: row; align-items: center; padding: 1.25rem; gap: 0.5rem;">
+            <div style="flex: 1;"></div>
+            <form method="GET">
+              <div class="control">
+                <input type="search" class="input" placeholder="{% trans 'Try a URI, name or title' %}" name="q">
+              </div>
+            </form>
+            <div class="dropdown is-right">
+              <div class="dropdown-trigger">
+                <button tabindex="0" class="button is-primary is-rounded" style="width: 2.5rem; height: 2.5rem; padding: 0;" aria-haspopup="true" aria-controls="account-menu">
+                  <i class="ph ph-user"></i>
+                </button>
+              </div>
+              <div class="dropdown-menu" id="account-menu" role="menu">
+                <div class="dropdown-content">
+                  {% block account_menu %}{% endblock %}
+                  <a href="/accounts/logout" class="dropdown-item">{% trans 'Log out' %}</a>
                 </div>
+              </div>
             </div>
-            
-            <div class="flex flex-row items-center p-5">
-              <form method="GET" action="" class="flex flex-1 flex-row items-center gap-2 p-2">
-                <h3 class="text-3xl">
-                  {% block view_title %}{% endblock %}
-                </h3>
-                <div style="flex: 1"></div>
-                <form method="GET">
-                  {% for n_period in periods %}
-                  <button type="submit" value="{{ n_period.id }}" name="period" class="bt btn-sm {% if period == n_period.id %}btn-neutral{% else %}btn-neutral-500{% endif %}">{% trans n_period.name %}</button>
-                  {% endfor %}
-                  <button name="filters" onclick="handleShowFiltersDialogButtonClick(event)" class="btn btn-sm btn-neutral-500">{% trans 'Filters' %} <i class="ph ph-sliders-horizontal"></i></button>
-                </form>
-                <div style="display: flex; flex-direction: row; align-items: center; gap: 1">
-                  {% block view_actions %} {% endblock %}
-                </div>
-              </form>
-            </div>
-            <div class="flex flex-1 flex-col" style="overflow-y: scroll">
-              {% block page %}{% endblock %}
-              <footer class="bg-dark text-light" style="padding: 20pt">
-                <div class="container">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <p>Copyright &copy; 2026 Alexander Forselius. All rights reserved.</p>
-                    </div>
-                    <div class="col-md-6">
-                      <ul>
-                        <li>
-                          <a href="/sv/terms-of-use">{% trans 'Terms of Use' %}</a>
-                        </li>
-                        <li>
-                          <a href="/sv/privacy-policy">{% trans 'Privacy Policy' %}</a>
-                        </li>
-                      </ul>
-                    </div>
+          </div>
+
+          <!-- Title bar: view title + period filters + actions -->
+          <div style="display: flex; flex-direction: row; align-items: center; padding: 1.25rem;">
+            <form method="GET" action="" style="display: flex; flex: 1; flex-direction: row; align-items: center; gap: 0.5rem; padding: 0.5rem;">
+              <h3 class="title is-4" style="margin: 0;">
+                {% block view_title %}{% endblock %}
+              </h3>
+              <div style="flex: 1;"></div>
+              <div class="buttons has-addons">
+                {% for n_period in periods %}
+                <button type="submit" value="{{ n_period.id }}" name="period" class="button is-small {% if period == n_period.id %}is-dark{% endif %}">{% trans n_period.name %}</button>
+                {% endfor %}
+                <button name="filters" onclick="handleShowFiltersDialogButtonClick(event)" class="button is-small">{% trans 'Filters' %} <i class="ph ph-sliders-horizontal" style="margin-left: 0.25rem;"></i></button>
+              </div>
+              <div style="display: flex; flex-direction: row; align-items: center; gap: 0.25rem;">
+                {% block view_actions %}{% endblock %}
+              </div>
+            </form>
+          </div>
+
+          <!-- Scrollable page content -->
+          <div style="flex: 1; overflow-y: scroll; display: flex; flex-direction: column;">
+            {% block page %}{% endblock %}
+            <footer class="has-background-dark has-text-light" style="padding: 20pt;">
+              <div class="container">
+                <div class="columns">
+                  <div class="column">
+                    <p>Copyright &copy; 2026 Alexander Forselius. All rights reserved.</p>
+                  </div>
+                  <div class="column">
+                    <ul>
+                      <li><a href="/sv/terms-of-use" class="has-text-light">{% trans 'Terms of Use' %}</a></li>
+                      <li><a href="/sv/privacy-policy" class="has-text-light">{% trans 'Privacy Policy' %}</a></li>
+                    </ul>
                   </div>
                 </div>
-                <div style="height: 200pt"></div>
-              </footer>
-            </div>
+              </div>
+              <div style="height: 200pt;"></div>
+            </footer>
           </div>
         </div>
       </div>
     </div>
+
     {% block bottom_tab_bar %}{% endblock %}
-    <div onClick="handleCloseFiltersDialogButtonClick(event)" id="filtersDialog" class="dialog-backdrop">
-      <div onclick="event.stopPropagation()" class="dialog dialog-right flex flex-col items-stretch p-3" id="filters">
-        <form method="GET" action="" class="flex flex-col flex-1">
-          <div class="flex flex-col flex-1" style="border-bottom: 1pt solid rgba(255, 255, 255, .5); overflow-y: scroll">
-            <h3>{% trans 'Time' %}</h3>
-            <optgroup>
+
+    <!-- Filters slide-in dialog -->
+    <div onclick="handleCloseFiltersDialogButtonClick(event)" id="filtersDialog" class="dialog-backdrop">
+      <div onclick="event.stopPropagation()" class="dialog dialog-right" style="display: flex; flex-direction: column; align-items: stretch; padding: 0.75rem;" id="filters">
+        <form method="GET" action="" style="display: flex; flex-direction: column; flex: 1;">
+          <div style="flex: 1; border-bottom: 1pt solid rgba(0, 0, 0, .2); overflow-y: scroll;">
+            <h3 class="title is-5">{% trans 'Time' %}</h3>
+            <div>
               {% for n_period in periods %}
-              <input type="radio" value="{{ n_period.id }}" name="period" class="bt btn-sm {% if period == n_period.id %}btn-neutral{% else %}btn-neutral-500{% endif %}">{% trans n_period.name %}</button>
+              <label class="radio">
+                <input type="radio" value="{{ n_period.id }}" name="period" {% if period == n_period.id %}checked{% endif %}>
+                {% trans n_period.name %}
+              </label>
               {% endfor %}
-            </optgroup>
+            </div>
             {% block list_filters %}{% endblock %}
           </div>
-          <div class="flex flex-row justify-center items-center gap-3">
-            <button onclick="handleShowFiltersDialogButtonClick(event)">{% trans 'Cancel '%}</button>
-            <button autofocus type="submit" class="btn btn-neutral">{% trans 'Finished' %}</button>
+          <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 0.75rem; padding-top: 0.75rem;">
+            <button type="button" class="button" onclick="handleCloseFiltersDialogButtonClick(event)">{% trans 'Cancel' %}</button>
+            <button autofocus type="submit" class="button is-dark">{% trans 'Finished' %}</button>
           </div>
         </form>
       </div>
     </div>
+
     <div class="loading-overlay"></div>
   </body>
 </html>

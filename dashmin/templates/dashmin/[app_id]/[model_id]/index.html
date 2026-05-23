@@ -1,35 +1,39 @@
 {% extends "dashmin/base.html" %}
 {% load i18n %}
 {% load humanize %}
-{% block title %}<h1 class="text-2xl">{% trans model.name %}</h1>{% endblock %}
+{% block title %}<h1 class="title is-4">{% trans model.name %}</h1>{% endblock %}
 {% block page %}
-<div class="">
-  <div class="card m-3">
+<div class="p-3">
+  <div class="card" style="margin: 0.75rem;">
     {% if object_list %}
-    <table class="table">
-      <thead>
-        <tr>
-          {% for field in list_display %}
-          <th>{% trans field %}</th>
+    <div class="card-content p-0">
+      <table class="table is-fullwidth is-hoverable">
+        <thead>
+          <tr>
+            {% for field in list_display %}
+            <th>{% trans field %}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for node in object_list %}
+          <tr>
+            {% for field in list_display %}
+            <td>
+              <a href="./{{ node.slug }}">{{ node.name }}</a>
+            </td>
+            {% endfor %}
+          </tr>
           {% endfor %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for node in object_list %}
-        <tr>
-          {% for field in list_display %}
-          <td> 
-            <a href="./{{ node.slug }}">{{ node.name }}</a> 
-          </td>
-          {% endfor %} 
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
     {% else %}
-    <div class="hero bg-neutral-100 justify-center flex flex-col gap-3" style="aspect-ratio: 16/9">
-      <i class="badge badge-primary ph ph-clock" style="aspect-ratio: 1/1 !important; height: 32pt; width: 32pt; border-radius: 50pt; font-size: 18pt"></i>
-      <h1 class="text-3xl font-bold">{% trans 'No nodes found' %}</h1>
+    <div class="hero" style="aspect-ratio: 16/9;">
+      <div class="hero-body" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;">
+        <span class="tag is-primary ph ph-clock" style="width: 32pt; height: 32pt; border-radius: 50%; font-size: 18pt;"></span>
+        <h1 class="title is-3">{% trans 'No nodes found' %}</h1>
+      </div>
     </div>
     {% endif %}
   </div>
